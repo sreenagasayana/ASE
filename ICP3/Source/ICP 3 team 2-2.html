@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.1/angular.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script>
+  var app = angular.module('myApp', []);
+  app.controller('nutritionControl', function($scope,$http) {
+    $scope.itemName = "";
+    $scope.ingrData = {};
+    $scope.viewContent = false;
+    var app_id = "2253b471";
+    var app_key = "831adc4c7b56fa5e1d472aa4d8a68f80";
+    var url ="https://api.edamam.com/api/nutrition-data?app_id="+app_id+"&app_key="+app_key+"&ingr=";
+    $scope.ingrSearch = function(ingrName){
+      if(ingrName == undefined){
+        alert('Please enter valid Ingredient Name');
+      }
+      else{
+        /* Nutrition API CAll*/
+        $http.get(url+ingrName)
+        .then(function(res) {
+            $scope.itemName = ingrName;
+            $scope.viewContent = true;
+            $scope.ingrData = res.data;
+            ingrDetails(ingrName,res.data.calories,res.data.totalWeight);
+          }
+        )
+      }
+    }
+
+    function ingrDetails(ingredientText,calories,totalWeight){
+      var text = ingredientText + " has " + calories + " calories " + " and total weight is " + totalWeight;
+      var nutritionDtlsURL = "https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?username=ee3f194c-eb5e-4daf-bfed-bef4ac390c47&password=TS5t3IbHyE0T&text="+text;
+
+      $scope.playNutritionDetails = function() {
+          var audio = new Audio(nutritionDtlsURL);
+          audio.play();
+      };
+
+    }
+  });
+</script>
+<style>
+.table th {
+  text-align: center;
+}
+</style>
+<body>
+  <div ng-app="myApp" ng-controller="nutritionControl">
+    <div style="background-color:#3F51B5;color:white;margin:0;">
+      <p style="padding: 20px 0;text-align:center;font-size:30px;">Nutrition details</p>
+    </div>
+
+    <div class="container">
+      <div style="margin: 50px 10px;text-align:center;">
+        <form class="navbar-form" role="search">
+          <div class="input-group add-on">
+            <input class="form-control" placeholder="Ingredient  Name" ng-model="ingrName" type="text">
+            <div class="input-group-btn">
+              <button class="btn btn-default" ng-click="ingrSearch(ingrName)"><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+          </div>
+        </form>
+        <div ng-show='viewContent'>
+        <div class="table-responsive" style="margin: 30px 200px;">
+          <table class="table table-bordered" >
+            <thead>
+              <tr>
+                <th>Ingredient Name</th>
+                <th>Calories</th>
+                <th>Total Weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ itemName }}</td>
+                <td>{{ ingrData.calories }}</td>
+                <td>{{ ingrData.totalWeight }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="playNutritionDetails()">Play nutrition details</button>
+      </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
