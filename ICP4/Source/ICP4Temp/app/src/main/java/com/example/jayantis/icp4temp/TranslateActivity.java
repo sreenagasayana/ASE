@@ -342,7 +342,6 @@ public class TranslateActivity extends AppCompatActivity {
             case "Japanese":
                 code = "ja";
                 break;
-
             default:
                 code = "en";
                 break;
@@ -363,17 +362,17 @@ public class TranslateActivity extends AppCompatActivity {
         Spinner spinner1 = (Spinner) findViewById(R.id.spinner1);
         Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
 
-        String source = spinner1.getSelectedItem().toString();
-        String target = spinner2.getSelectedItem().toString();
+        String transfrom = spinner1.getSelectedItem().toString();
+        String transto = spinner2.getSelectedItem().toString();
 
-        String src = getCode(source);
-        String trgt = getCode(target);
+        String source = getCode(transfrom);
+        String target = getCode(transto);
 
         sourceText = sourceTextView.getText().toString();
         String getURL = "https://translate.yandex.net/api/v1.5/tr.json/translate?" +
                 "key=trnsl.1.1.20151023T145251Z.bf1ca7097253ff7e." +
                 "c0b0a88bea31ba51f72504cc0cc42cf891ed90d2&text=" + sourceText +"&" +
-                "lang="+src+"-"+trgt+"&[format=plain]&[options=1]&[callback=set]";//The API service URL
+                "lang="+source+"-"+target+"&[format=plain]&[options=1]&[callback=set]";//The API service URL
         final String response1 = "";
         OkHttpClient client = new OkHttpClient();
         try {
